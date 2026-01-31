@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  postgres:
+    container_name: barber-forward-pg
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: docker
+      POSTGRES_DB: barber_forward
+      PGDATA: /data/postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./data/pg:/data/postgres
