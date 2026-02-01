@@ -6,3 +6,175 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+enum BackofficeRole {
+  ADMIN
+  BARBEIRO
+}
+
+enum AppointmentStatus {
+  PENDENTE
+  CONFIRMADO
+  CANCELADO
+  CONCLUIDO
+}
+
+enum DayOfWeek {
+  DOMINGO
+  SEGUNDA
+  TERCA
+  QUARTA
+  QUINTA
+  SEXTA
+  SABADO
+}
+
+// ===== USUÁRIOS DO BACKOFFICE (Admin + Barbeiros) =====
+model BackofficeUser {
+  id        String         @id @default(uuid())
+  name      String
+  email     String         @unique
+  password  String
+  phone     String?
+  avatar    String?
+  role      BackofficeRole @default(BARBEIRO)
+  isActive  Boolean        @default(true) @map("is_active")
+  createdAt DateTime       @default(now()) @map("created_at")
+  updatedAt DateTime       @updatedAt @map("updated_at")
+
+  barbershop Barbershop?
+
+  @@map("backoffice_users")
+}
+
+// ===== CLIENTES DO APP =====
+model Client {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  phone     String?
+  avatar    String?
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  appointments Appointment[]
+  favorites    Favorite[]
+
+  @@map("clients")
+}
+
+// ===== BARBEARIA =====
+model Barbershop {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  email       String?
+  phone       String
+  avatar      String?
+  address     String
+  city        String
+  state       String
+  zipCode     String?  @map("zip_code")
+  latitude    Float?
+  longitude   Float?
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  ownerId       String            @unique @map("owner_id")
+  owner         BackofficeUser    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  services      Service[]
+  businessHours BusinessHour[]
+  appointments  Appointment[]
+  favorites     Favorite[]
+  images        BarbershopImage[]
+
+  @@map("barbershops")
+}
+
+// ===== IMAGENS DA BARBEARIA =====
+model BarbershopImage {
+  id        String   @id @default(uuid())
+  url       String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  barbershopId String     @map("barbershop_id")
+  barbershop   Barbershop @relation(fields: [barbershopId], references: [id], onDelete: Cascade)
+
+  @@map("barbershop_images")
+}
+
+// ===== SERVIÇOS =====
+model Service {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  duration    Int? // Duração em minutos
+  price       Float
+  oldPrice    Float?
+  imageUrl    String?
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  barbershopId String        @map("barbershop_id")
+  barbershop   Barbershop    @relation(fields: [barbershopId], references: [id], onDelete: Cascade)
+  appointments Appointment[]
+
+  @@map("services")
+}
+
+// ===== HORÁRIOS DE FUNCIONAMENTO =====
+model BusinessHour {
+  id        String    @id @default(uuid())
+  dayOfWeek DayOfWeek @map("day_of_week")
+  openTime  String    @map("open_time") // Formato: "HH:mm" (ex: "09:00")
+  closeTime String    @map("close_time") // Formato: "HH:mm" (ex: "18:00")
+  isClosed  Boolean   @default(false) @map("is_closed")
+
+  barbershopId String     @map("barbershop_id")
+  barbershop   Barbershop @relation(fields: [barbershopId], references: [id], onDelete: Cascade)
+
+  @@unique([barbershopId, dayOfWeek])
+  @@map("business_hours")
+}
+
+// ===== AGENDAMENTOS =====
+model Appointment {
+  id        String            @id @default(uuid())
+  date      DateTime // Data e hora do agendamento
+  status    AppointmentStatus @default(PENDENTE)
+  notes     String? // Observações do cliente
+  createdAt DateTime          @default(now()) @map("created_at")
+  updatedAt DateTime          @updatedAt @map("updated_at")
+
+  clientId     String     @map("client_id")
+  client       Client     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  barbershopId String     @map("barbershop_id")
+  barbershop   Barbershop @relation(fields: [barbershopId], references: [id], onDelete: Cascade)
+  serviceId    String     @map("service_id")
+  service      Service    @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@index([clientId, status])
+  @@index([barbershopId, date])
+  @@index([date, status])
+  @@map("appointments")
+}
+
+// ===== FAVORITOS =====
+model Favorite {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  clientId     String     @map("client_id")
+  client       Client     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  barbershopId String     @map("barbershop_id")
+  barbershop   Barbershop @relation(fields: [barbershopId], references: [id], onDelete: Cascade)
+
+  @@unique([clientId, barbershopId])
+  @@map("favorites")
+}
