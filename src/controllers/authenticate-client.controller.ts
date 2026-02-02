@@ -52,6 +52,14 @@ export class AuthenticateController {
       sub: user.id,
     })
 
-    return { access_token: accessToken }
+    return {
+      data: {
+        user: {
+          name: user.name,
+          email: user.email,
+        },
+        access_token: accessToken,
+      },
+    }
   }
 }
