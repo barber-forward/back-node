@@ -6,6 +6,7 @@ import { envSchema } from './env'
 import { AuthModule } from './auth/auth.module'
 import { AuthenticateController } from './controllers/authenticate-client.controller'
 import { BarbershopController } from './controllers/barbershop.controller'
+import { GetUserProfileController } from './controllers/get-user-profile.controller'
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { BarbershopController } from './controllers/barbershop.controller'
     CreateAccountClientController,
     AuthenticateController,
     BarbershopController,
+    GetUserProfileController,
   ],
   providers: [PrismaService],
 })
