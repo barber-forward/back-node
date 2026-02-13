@@ -51,6 +51,15 @@ const updateBarbershopBodySchema = z
   })
   .strict()
 
+// const pageQueryParamSchema = z
+//   .string()
+//   .optional()
+//   .default('1')
+//   .transform(Number)
+//   .pipe(z.number().int().positive().min(1))
+
+// type PageQueryParamSchemaType = z.infer<typeof pageQueryParamSchema>
+
 type CreateBarbershopBodySchemaType = z.infer<typeof createBarbershopBodySchema>
 
 type UpdateBarbershopBodySchemaType = z.infer<typeof updateBarbershopBodySchema>
@@ -98,6 +107,8 @@ export class BarbershopController {
     @Query('city') city?: string,
     @Query('state') state?: string,
     @Query('isActive') isActive?: string,
+    @Query('page') page?: string,
+    @Query('pageSize') pageSize?: string,
   ) {
     const where: Partial<{
       city: string
@@ -109,29 +120,45 @@ export class BarbershopController {
     if (state) where.state = state
     if (isActive !== undefined) where.isActive = isActive === 'true'
 
-    const barbershops = await this.prisma.barbershop.findMany({
-      where,
-      include: {
-        owner: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            phone: true,
-          },
-        },
-        services: {
-          where: { isActive: true },
-        },
-        businessHours: true,
-        images: true,
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-    })
+    const currentPage = page ? parseInt(page, 10) : 1
+    const currentPageSize = pageSize ? parseInt(pageSize, 10) : 10
 
-    return { barbershops }
+    const [barbershops, totalCount] = await Promise.all([
+      this.prisma.barbershop.findMany({
+        where,
+        include: {
+          owner: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              phone: true,
+            },
+          },
+          services: {
+            where: { isActive: true },
+          },
+          businessHours: true,
+          images: true,
+        },
+        take: currentPageSize,
+        skip: (currentPage - 1) * currentPageSize,
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+      this.prisma.barbershop.count({ where }),
+    ])
+
+    return {
+      barbershops,
+      pagination: {
+        page: currentPage,
+        pageSize: currentPageSize,
+        total: totalCount,
+        totalPages: Math.ceil(totalCount / currentPageSize),
+      },
+    }
   }
 
   @Get(':id')
