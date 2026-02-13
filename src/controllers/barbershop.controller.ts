@@ -12,11 +12,10 @@ import {
   HttpCode,
   NotFoundException,
   Param,
+  Patch,
   Post,
-  Put,
   Query,
   UseGuards,
-  UsePipes,
 } from '@nestjs/common'
 import { CurrentUser } from '@/auth/current-user-decorator'
 import { UserPayloadType } from '@/auth/jwt.strategy'
@@ -31,8 +30,8 @@ const createBarbershopBodySchema = z.object({
   city: z.string(),
   state: z.string(),
   zipCode: z.string().optional(),
-  latitude: z.number().optional(),
-  longitude: z.number().optional(),
+  latitude: z.coerce.number().optional(),
+  longitude: z.coerce.number().optional(),
 })
 
 const updateBarbershopBodySchema = z
@@ -46,11 +45,20 @@ const updateBarbershopBodySchema = z
     city: z.string().optional(),
     state: z.string().optional(),
     zipCode: z.string().optional(),
-    latitude: z.number().optional(),
-    longitude: z.number().optional(),
+    latitude: z.coerce.number().optional(),
+    longitude: z.coerce.number().optional(),
     isActive: z.boolean().optional(),
   })
   .strict()
+
+// const pageQueryParamSchema = z
+//   .string()
+//   .optional()
+//   .default('1')
+//   .transform(Number)
+//   .pipe(z.number().int().positive().min(1))
+
+// type PageQueryParamSchemaType = z.infer<typeof pageQueryParamSchema>
 
 type CreateBarbershopBodySchemaType = z.infer<typeof createBarbershopBodySchema>
 
@@ -63,9 +71,9 @@ export class BarbershopController {
   @Post()
   @HttpCode(201)
   @UseGuards(JwtAuthGuard)
-  @UsePipes(new ZodValidationPipe(createBarbershopBodySchema))
   async create(
-    @Body() body: CreateBarbershopBodySchemaType,
+    @Body(new ZodValidationPipe(createBarbershopBodySchema))
+    body: CreateBarbershopBodySchemaType,
     @CurrentUser() user: UserPayloadType,
   ) {
     const userId = user.sub
@@ -90,7 +98,7 @@ export class BarbershopController {
       },
     })
 
-    return barbershop
+    return { barbershop }
   }
 
   @Get()
@@ -99,6 +107,8 @@ export class BarbershopController {
     @Query('city') city?: string,
     @Query('state') state?: string,
     @Query('isActive') isActive?: string,
+    @Query('page') page?: string,
+    @Query('pageSize') pageSize?: string,
   ) {
     const where: Partial<{
       city: string
@@ -110,29 +120,45 @@ export class BarbershopController {
     if (state) where.state = state
     if (isActive !== undefined) where.isActive = isActive === 'true'
 
-    const barbershops = await this.prisma.barbershop.findMany({
-      where,
-      include: {
-        owner: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            phone: true,
-          },
-        },
-        services: {
-          where: { isActive: true },
-        },
-        businessHours: true,
-        images: true,
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-    })
+    const currentPage = page ? parseInt(page, 10) : 1
+    const currentPageSize = pageSize ? parseInt(pageSize, 10) : 10
 
-    return barbershops
+    const [barbershops, totalCount] = await Promise.all([
+      this.prisma.barbershop.findMany({
+        where,
+        include: {
+          owner: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              phone: true,
+            },
+          },
+          services: {
+            where: { isActive: true },
+          },
+          businessHours: true,
+          images: true,
+        },
+        take: currentPageSize,
+        skip: (currentPage - 1) * currentPageSize,
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+      this.prisma.barbershop.count({ where }),
+    ])
+
+    return {
+      barbershops,
+      pagination: {
+        page: currentPage,
+        pageSize: currentPageSize,
+        total: totalCount,
+        totalPages: Math.ceil(totalCount / currentPageSize),
+      },
+    }
   }
 
   @Get(':id')
@@ -161,16 +187,16 @@ export class BarbershopController {
       throw new NotFoundException('Barbearia não encontrada.')
     }
 
-    return barbershop
+    return { barbershop }
   }
 
-  @Put(':id')
+  @Patch(':id')
   @HttpCode(200)
   @UseGuards(JwtAuthGuard)
-  @UsePipes(new ZodValidationPipe(updateBarbershopBodySchema))
   async update(
     @Param('id') id: string,
-    @Body() body: UpdateBarbershopBodySchemaType,
+    @Body(new ZodValidationPipe(updateBarbershopBodySchema))
+    body: UpdateBarbershopBodySchemaType,
     @CurrentUser() user: UserPayloadType,
   ) {
     const userId = user.sub
@@ -194,7 +220,7 @@ export class BarbershopController {
       data: body,
     })
 
-    return updatedBarbershop
+    return { barbershop: updatedBarbershop }
   }
 
   @Delete(':id')
@@ -220,5 +246,7 @@ export class BarbershopController {
     await this.prisma.barbershop.delete({
       where: { id },
     })
+
+    return { success: true, message: 'Barbearia deletada com sucesso.' }
   }
 }
