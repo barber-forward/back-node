@@ -12,11 +12,10 @@ import {
   HttpCode,
   NotFoundException,
   Param,
+  Patch,
   Post,
-  Put,
   Query,
   UseGuards,
-  UsePipes,
 } from '@nestjs/common'
 import { CurrentUser } from '@/auth/current-user-decorator'
 import { UserPayloadType } from '@/auth/jwt.strategy'
@@ -31,8 +30,8 @@ const createBarbershopBodySchema = z.object({
   city: z.string(),
   state: z.string(),
   zipCode: z.string().optional(),
-  latitude: z.number().optional(),
-  longitude: z.number().optional(),
+  latitude: z.coerce.number().optional(),
+  longitude: z.coerce.number().optional(),
 })
 
 const updateBarbershopBodySchema = z
@@ -46,8 +45,8 @@ const updateBarbershopBodySchema = z
     city: z.string().optional(),
     state: z.string().optional(),
     zipCode: z.string().optional(),
-    latitude: z.number().optional(),
-    longitude: z.number().optional(),
+    latitude: z.coerce.number().optional(),
+    longitude: z.coerce.number().optional(),
     isActive: z.boolean().optional(),
   })
   .strict()
@@ -63,9 +62,9 @@ export class BarbershopController {
   @Post()
   @HttpCode(201)
   @UseGuards(JwtAuthGuard)
-  @UsePipes(new ZodValidationPipe(createBarbershopBodySchema))
   async create(
-    @Body() body: CreateBarbershopBodySchemaType,
+    @Body(new ZodValidationPipe(createBarbershopBodySchema))
+    body: CreateBarbershopBodySchemaType,
     @CurrentUser() user: UserPayloadType,
   ) {
     const userId = user.sub
@@ -90,7 +89,7 @@ export class BarbershopController {
       },
     })
 
-    return barbershop
+    return { barbershop }
   }
 
   @Get()
@@ -132,7 +131,7 @@ export class BarbershopController {
       },
     })
 
-    return barbershops
+    return { barbershops }
   }
 
   @Get(':id')
@@ -161,16 +160,16 @@ export class BarbershopController {
       throw new NotFoundException('Barbearia não encontrada.')
     }
 
-    return barbershop
+    return { barbershop }
   }
 
-  @Put(':id')
+  @Patch(':id')
   @HttpCode(200)
   @UseGuards(JwtAuthGuard)
-  @UsePipes(new ZodValidationPipe(updateBarbershopBodySchema))
   async update(
     @Param('id') id: string,
-    @Body() body: UpdateBarbershopBodySchemaType,
+    @Body(new ZodValidationPipe(updateBarbershopBodySchema))
+    body: UpdateBarbershopBodySchemaType,
     @CurrentUser() user: UserPayloadType,
   ) {
     const userId = user.sub
@@ -194,7 +193,7 @@ export class BarbershopController {
       data: body,
     })
 
-    return updatedBarbershop
+    return { barbershop: updatedBarbershop }
   }
 
   @Delete(':id')
@@ -220,5 +219,7 @@ export class BarbershopController {
     await this.prisma.barbershop.delete({
       where: { id },
     })
+
+    return { success: true, message: 'Barbearia deletada com sucesso.' }
   }
 }
