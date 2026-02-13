@@ -98,7 +98,7 @@ export class BarbershopController {
       },
     })
 
-    return { barbershop }
+    return barbershop
   }
 
   @Get()
@@ -123,7 +123,7 @@ export class BarbershopController {
     const currentPage = page ? parseInt(page, 10) : 1
     const currentPageSize = pageSize ? parseInt(pageSize, 10) : 10
 
-    const [barbershops, totalCount] = await Promise.all([
+    const [result, totalCount] = await Promise.all([
       this.prisma.barbershop.findMany({
         where,
         include: {
@@ -151,7 +151,7 @@ export class BarbershopController {
     ])
 
     return {
-      barbershops,
+      result,
       pagination: {
         page: currentPage,
         pageSize: currentPageSize,
@@ -187,7 +187,7 @@ export class BarbershopController {
       throw new NotFoundException('Barbearia não encontrada.')
     }
 
-    return { barbershop }
+    return barbershop
   }
 
   @Patch(':id')
@@ -220,7 +220,7 @@ export class BarbershopController {
       data: body,
     })
 
-    return { barbershop: updatedBarbershop }
+    return updatedBarbershop
   }
 
   @Delete(':id')
@@ -246,7 +246,5 @@ export class BarbershopController {
     await this.prisma.barbershop.delete({
       where: { id },
     })
-
-    return { success: true, message: 'Barbearia deletada com sucesso.' }
   }
 }
