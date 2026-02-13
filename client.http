@@ -1,0 +1,102 @@
+@baseUrl = http://localhost:3333/api
+@authToken = 
+@barbershopId = 
+
+### Login
+POST {{baseUrl}}/auth/sessions
+Content-Type: application/json
+
+{
+  "email": "diego@rocketseat.com.br",
+  "password": "123456"
+}
+
+### Login BKO
+POST {{baseUrl}}/backoffice/sessions
+Content-Type: application/json
+
+{
+  "email": "diegobko@rocketseat2.com.br",
+  "password": "123456"
+}
+
+### Cadastro
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Diego Fernandes",
+  "email": "diego@rocketseat.com.br",
+  "password": "123456"
+}
+
+### Cadastro BKO
+POST {{baseUrl}}/backoffice/accounts
+Content-Type: application/json
+
+{
+  "name": "Diego Fernandes BKO2",
+  "email": "diegobko@rocketseat2.com.br",
+  "password": "123456"
+}
+
+### Perfil do usuário
+GET {{baseUrl}}/users/me
+Authorization: Bearer {{authToken}}
+
+### Criar barbearia
+POST {{baseUrl}}/barbershops
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+# {
+#   "name": "Barbearia do Tiago",
+#   "phone": "11999999999",
+#   "address": "Rua A, 123",
+#   "city": "São Paulo",
+#   "state": "SP",
+#   "description": "Descrição opcional",
+#   "email": "contato@example.com",
+#   "avatar": "https://i.pravatar.cc/150?img=2",
+#   "zipCode": "01234-567",
+#   "latitude": -23.55052,
+#   "longitude": -46.633308
+# }
+
+{
+  "name": "Barbearia do Lucas",
+  "phone": "11999999998",
+  "address": "Rua B, 123",
+  "city": "Brasília",
+  "state": "DF",
+  "description": "Descrição opcional",
+  "email": "contato@example.com",
+  "avatar": "https://i.pravatar.cc/150?img=3",
+  "zipCode": "01234-567",
+  "latitude": -23.55052,
+  "longitude": -46.633308
+}
+
+### Atualizar barbearia
+PATCH {{baseUrl}}/barbershops/{{barbershopId}}
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "address": "Rua A, 1234"
+}
+
+### Buscar barbearia por ID
+GET {{baseUrl}}/barbershops/{{barbershopId}}
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+### Listar barbearias
+GET {{baseUrl}}/barbershops
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+### Deletar barbearia
+DELETE {{baseUrl}}/barbershops/{{barbershopId}}
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
