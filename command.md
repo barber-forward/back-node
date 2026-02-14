@@ -15,6 +15,7 @@
 > yarn add @types/passport-google-oauth2 -D
 > yarn add vitest unplugin-swc @swc/core @vitest/coverage-v8 -D
 > yarn add vite-tsconfig-paths -D
+> yarn add @types/supertest -D
 
 - docker-compose up -d
 - yarn prisma migrate dev
