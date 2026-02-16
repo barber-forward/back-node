@@ -1,6 +1,6 @@
-import { Either, right } from '@/domain/core/either'
 import { AppointmentRepository } from '@/domain/repositories/appointment-repository'
 import { Appointment } from '@/domain/entities/appointment'
+import { Either, right } from '@/domain/core/either'
 import { Injectable } from '@nestjs/common'
 
 interface ListClientAppointmentsUseCaseRequest {

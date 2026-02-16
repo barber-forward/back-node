@@ -1,5 +1,5 @@
-import { Either, left, right } from '@/domain/core/either'
 import { ClientRepository } from '@/domain/repositories/client-repository'
+import { Either, left, right } from '@/domain/core/either'
 import { Injectable } from '@nestjs/common'
 import { compare } from 'bcryptjs'
 
@@ -8,18 +8,18 @@ interface AuthenticateClientUseCaseRequest {
   password: string
 }
 
+export class InvalidCredentialsError extends Error {
+  constructor() {
+    super('Credenciais inválidas')
+  }
+}
+
 type AuthenticateClientUseCaseResponse = Either<
   InvalidCredentialsError,
   {
     clientId: string
   }
 >
-
-export class InvalidCredentialsError extends Error {
-  constructor() {
-    super('Credenciais inválidas')
-  }
-}
 
 @Injectable()
 export class AuthenticateClientUseCase {

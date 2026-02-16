@@ -1,6 +1,6 @@
-import { Entity } from '../core/entity'
 import { UniqueEntityID } from '../core/unique-entity-id'
 import { AppointmentStatus } from '../enums'
+import { Entity } from '../core/entity'
 
 export interface AppointmentProps {
   date: Date

@@ -1,7 +1,7 @@
-import { Either, left, right } from '@/domain/core/either'
 import { BackofficeUserRepository } from '@/domain/repositories/backoffice-user-repository'
 import { BackofficeUser } from '@/domain/entities/backoffice-user'
-import { BackofficeRole } from '@/domain/enums'
+import { Either, left, right } from '@/domain/core/either'
+// import { BackofficeRole } from '@/domain/enums'
 import { Injectable } from '@nestjs/common'
 import { hash } from 'bcryptjs'
 
@@ -10,7 +10,13 @@ interface RegisterBackofficeUserUseCaseRequest {
   email: string
   password: string
   phone?: string
-  role?: BackofficeRole
+  //   role?: BackofficeRole
+}
+
+export class BackofficeUserAlreadyExistsError extends Error {
+  constructor() {
+    super('Usuário do backoffice com esse e-mail já existe')
+  }
 }
 
 type RegisterBackofficeUserUseCaseResponse = Either<
@@ -20,12 +26,6 @@ type RegisterBackofficeUserUseCaseResponse = Either<
   }
 >
 
-export class BackofficeUserAlreadyExistsError extends Error {
-  constructor() {
-    super('Usuário do backoffice com esse e-mail já existe')
-  }
-}
-
 @Injectable()
 export class RegisterBackofficeUserUseCase {
   constructor(private backofficeUserRepository: BackofficeUserRepository) {}
@@ -33,7 +33,7 @@ export class RegisterBackofficeUserUseCase {
   async execute(
     request: RegisterBackofficeUserUseCaseRequest,
   ): Promise<RegisterBackofficeUserUseCaseResponse> {
-    const { name, email, password, phone, role } = request
+    const { name, email, password, phone } = request
 
     const userWithSameEmail =
       await this.backofficeUserRepository.findByEmail(email)
@@ -49,7 +49,7 @@ export class RegisterBackofficeUserUseCase {
       email,
       password: hashedPassword,
       phone,
-      role,
+      //   role,
     })
 
     await this.backofficeUserRepository.create(user)

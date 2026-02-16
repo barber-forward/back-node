@@ -1,5 +1,5 @@
-import { Either, left, right } from '@/domain/core/either'
 import { BackofficeUserRepository } from '@/domain/repositories/backoffice-user-repository'
+import { Either, left, right } from '@/domain/core/either'
 import { Injectable } from '@nestjs/common'
 import { compare } from 'bcryptjs'
 
@@ -8,18 +8,18 @@ interface AuthenticateBackofficeUserUseCaseRequest {
   password: string
 }
 
+export class InvalidCredentialsError extends Error {
+  constructor() {
+    super('Credenciais inválidas')
+  }
+}
+
 type AuthenticateBackofficeUserUseCaseResponse = Either<
   InvalidCredentialsError,
   {
     userId: string
   }
 >
-
-export class InvalidCredentialsError extends Error {
-  constructor() {
-    super('Credenciais inválidas')
-  }
-}
 
 @Injectable()
 export class AuthenticateBackofficeUserUseCase {

@@ -1,10 +1,10 @@
+import { Barbershop } from '@/domain/entities/barbershop'
 import { Either, right } from '@/domain/core/either'
+import { Injectable } from '@nestjs/common'
 import {
   BarbershopRepository,
   FindManyBarbershopsParams,
 } from '@/domain/repositories/barbershop-repository'
-import { Barbershop } from '@/domain/entities/barbershop'
-import { Injectable } from '@nestjs/common'
 
 interface ListBarbershopsUseCaseRequest {
   city?: string

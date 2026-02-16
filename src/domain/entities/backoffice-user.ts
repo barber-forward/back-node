@@ -1,6 +1,6 @@
 import { UniqueEntityID } from '../core/unique-entity-id'
-import { Entity } from '../core/entity'
 // import { BackofficeRole } from '../enums'
+import { Entity } from '../core/entity'
 
 export interface BackofficeUserProps {
   name: string

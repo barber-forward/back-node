@@ -1,10 +1,16 @@
-import { Either, left, right } from '@/domain/core/either'
 import { BarbershopRepository } from '@/domain/repositories/barbershop-repository'
+import { Either, left, right } from '@/domain/core/either'
 import { Barbershop } from '@/domain/entities/barbershop'
 import { Injectable } from '@nestjs/common'
 
 interface GetBarbershopDetailsUseCaseRequest {
   barbershopId: string
+}
+
+export class BarbershopNotFoundError extends Error {
+  constructor() {
+    super('Barbearia não encontrada')
+  }
 }
 
 type GetBarbershopDetailsUseCaseResponse = Either<
@@ -13,12 +19,6 @@ type GetBarbershopDetailsUseCaseResponse = Either<
     barbershop: Barbershop
   }
 >
-
-export class BarbershopNotFoundError extends Error {
-  constructor() {
-    super('Barbearia não encontrada')
-  }
-}
 
 @Injectable()
 export class GetBarbershopDetailsUseCase {

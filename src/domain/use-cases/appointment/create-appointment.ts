@@ -1,10 +1,10 @@
-import { Either, left, right } from '@/domain/core/either'
 import { AppointmentRepository } from '@/domain/repositories/appointment-repository'
-import { ServiceRepository } from '@/domain/repositories/service-repository'
 import { BarbershopRepository } from '@/domain/repositories/barbershop-repository'
+import { ServiceRepository } from '@/domain/repositories/service-repository'
 import { ClientRepository } from '@/domain/repositories/client-repository'
-import { Appointment } from '@/domain/entities/appointment'
 import { UniqueEntityID } from '@/domain/core/unique-entity-id'
+import { Appointment } from '@/domain/entities/appointment'
+import { Either, left, right } from '@/domain/core/either'
 import { Injectable } from '@nestjs/common'
 
 interface CreateAppointmentUseCaseRequest {
@@ -14,16 +14,6 @@ interface CreateAppointmentUseCaseRequest {
   date: Date
   notes?: string
 }
-
-type CreateAppointmentUseCaseResponse = Either<
-  | ClientNotFoundError
-  | BarbershopNotFoundError
-  | ServiceNotFoundError
-  | ServiceNotAvailableError,
-  {
-    appointment: Appointment
-  }
->
 
 export class ClientNotFoundError extends Error {
   constructor() {
@@ -48,6 +38,16 @@ export class ServiceNotAvailableError extends Error {
     super('Serviço não está disponível')
   }
 }
+
+type CreateAppointmentUseCaseResponse = Either<
+  | ClientNotFoundError
+  | BarbershopNotFoundError
+  | ServiceNotFoundError
+  | ServiceNotAvailableError,
+  {
+    appointment: Appointment
+  }
+>
 
 @Injectable()
 export class CreateAppointmentUseCase {

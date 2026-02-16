@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common'
+import { UniqueEntityID } from '@/domain/core/unique-entity-id'
 import { PrismaService } from '@/infra/prisma/prisma.service'
+import { Barbershop } from '@/domain/entities/barbershop'
+import { Injectable } from '@nestjs/common'
 import {
   BarbershopRepository,
   FindManyBarbershopsParams,
 } from '@/domain/repositories/barbershop-repository'
-import { Barbershop } from '@/domain/entities/barbershop'
-import { UniqueEntityID } from '@/domain/core/unique-entity-id'
 
 @Injectable()
 export class PrismaBarbershopRepository implements BarbershopRepository {

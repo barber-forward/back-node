@@ -1,19 +1,12 @@
-import { Either, left, right } from '@/domain/core/either'
 import { AppointmentRepository } from '@/domain/repositories/appointment-repository'
 import { Appointment } from '@/domain/entities/appointment'
+import { Either, left, right } from '@/domain/core/either'
 import { Injectable } from '@nestjs/common'
 
 interface CancelAppointmentUseCaseRequest {
   appointmentId: string
   userId: string // pode ser clientId ou backofficeUserId
 }
-
-type CancelAppointmentUseCaseResponse = Either<
-  AppointmentNotFoundError | CannotCancelAppointmentError,
-  {
-    appointment: Appointment
-  }
->
 
 export class AppointmentNotFoundError extends Error {
   constructor() {
@@ -26,6 +19,13 @@ export class CannotCancelAppointmentError extends Error {
     super('Não é possível cancelar este agendamento')
   }
 }
+
+type CancelAppointmentUseCaseResponse = Either<
+  AppointmentNotFoundError | CannotCancelAppointmentError,
+  {
+    appointment: Appointment
+  }
+>
 
 @Injectable()
 export class CancelAppointmentUseCase {

@@ -1,5 +1,5 @@
-import { Either, left, right } from '@/domain/core/either'
 import { ClientRepository } from '@/domain/repositories/client-repository'
+import { Either, left, right } from '@/domain/core/either'
 import { Client } from '@/domain/entities/client'
 import { Injectable } from '@nestjs/common'
 import { hash } from 'bcryptjs'
@@ -11,18 +11,18 @@ interface RegisterClientUseCaseRequest {
   phone?: string
 }
 
+export class ClientAlreadyExistsError extends Error {
+  constructor() {
+    super('Cliente com esse e-mail já existe')
+  }
+}
+
 type RegisterClientUseCaseResponse = Either<
   ClientAlreadyExistsError,
   {
     client: Client
   }
 >
-
-export class ClientAlreadyExistsError extends Error {
-  constructor() {
-    super('Cliente com esse e-mail já existe')
-  }
-}
 
 @Injectable()
 export class RegisterClientUseCase {
