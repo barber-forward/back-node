@@ -1,4 +1,4 @@
-import { Env } from 'src/env'
+import { Env } from '@/infra/env'
 import { Module } from '@nestjs/common'
 import { JwtModule } from '@nestjs/jwt'
 import { JwtStrategy } from './jwt.strategy'

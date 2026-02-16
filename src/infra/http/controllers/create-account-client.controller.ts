@@ -1,5 +1,5 @@
-import { ZodValidationPipe } from '@/pipes/zod-validation-pipe'
-import { PrismaService } from '@/prisma/prisma.service'
+import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
+import { PrismaService } from '@/infra/prisma/prisma.service'
 import {
   ConflictException,
   Body,
@@ -11,27 +11,27 @@ import {
 import { hash } from 'bcryptjs'
 import { z } from 'zod'
 
-const createAccountBackofficeBodySchema = z.object({
+const createAccountClientBodySchema = z.object({
   name: z.string().min(3),
   email: z.string().email(),
   password: z.string().min(6),
 })
 
-type CreateAccountBackofficeBodySchemaType = z.infer<
-  typeof createAccountBackofficeBodySchema
+type CreateAccountClientBodySchemaType = z.infer<
+  typeof createAccountClientBodySchema
 >
 
-@Controller('/backoffice/accounts')
-export class CreateAccountBackofficeController {
+@Controller('/auth')
+export class CreateAccountClientController {
   constructor(private prisma: PrismaService) {}
 
-  @Post()
+  @Post('/register')
   @HttpCode(201)
-  @UsePipes(new ZodValidationPipe(createAccountBackofficeBodySchema))
-  async handle(@Body() body: CreateAccountBackofficeBodySchemaType) {
+  @UsePipes(new ZodValidationPipe(createAccountClientBodySchema))
+  async handle(@Body() body: CreateAccountClientBodySchemaType) {
     const { name, email, password } = body
 
-    const userWithSameEmail = await this.prisma.backofficeUser.findUnique({
+    const userWithSameEmail = await this.prisma.client.findUnique({
       where: { email },
     })
 
@@ -41,7 +41,7 @@ export class CreateAccountBackofficeController {
 
     const hashedPassword = await hash(password, 8)
 
-    await this.prisma.backofficeUser.create({
+    await this.prisma.client.create({
       data: {
         name,
         email,

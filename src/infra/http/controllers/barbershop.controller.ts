@@ -1,7 +1,7 @@
 import { z } from 'zod'
-import { JwtAuthGuard } from '@/auth/jwt-auth.guard'
-import { PrismaService } from '@/prisma/prisma.service'
-import { ZodValidationPipe } from '@/pipes/zod-validation-pipe'
+import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard'
+import { PrismaService } from '@/infra/prisma/prisma.service'
+import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 import {
   Body,
   ConflictException,
@@ -17,8 +17,8 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common'
-import { CurrentUser } from '@/auth/current-user-decorator'
-import { UserPayloadType } from '@/auth/jwt.strategy'
+import { CurrentUser } from '@/infra/auth/current-user-decorator'
+import { UserPayloadType } from '@/infra/auth/jwt.strategy'
 
 const createBarbershopBodySchema = z.object({
   name: z.string().min(3),
