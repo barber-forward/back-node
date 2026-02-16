@@ -1,6 +1,6 @@
-import { Entity } from '../core/entity'
 import { UniqueEntityID } from '../core/unique-entity-id'
-import { BackofficeRole } from '../enums'
+import { Entity } from '../core/entity'
+// import { BackofficeRole } from '../enums'
 
 export interface BackofficeUserProps {
   name: string
@@ -8,7 +8,7 @@ export interface BackofficeUserProps {
   password: string
   phone?: string
   avatar?: string
-  role: BackofficeRole
+  //   role: BackofficeRole
   isActive: boolean
   createdAt: Date
   updatedAt: Date
@@ -35,9 +35,9 @@ export class BackofficeUser extends Entity<BackofficeUserProps> {
     return this.props.avatar
   }
 
-  get role() {
-    return this.props.role
-  }
+  //   get role() {
+  //     return this.props.role
+  //   }
 
   get isActive() {
     return this.props.isActive
@@ -71,13 +71,13 @@ export class BackofficeUser extends Entity<BackofficeUserProps> {
     this.touch()
   }
 
-  public isAdmin(): boolean {
-    return this.props.role === BackofficeRole.ADMIN
-  }
+  //   public isAdmin(): boolean {
+  //     return this.props.role === BackofficeRole.ADMIN
+  //   }
 
-  public isBarbeiro(): boolean {
-    return this.props.role === BackofficeRole.BARBEIRO
-  }
+  //   public isBarbeiro(): boolean {
+  //     return this.props.role === BackofficeRole.BARBEIRO
+  //   }
 
   public deactivate() {
     this.props.isActive = false
@@ -101,7 +101,7 @@ export class BackofficeUser extends Entity<BackofficeUserProps> {
         password: props.password!,
         phone: props.phone,
         avatar: props.avatar,
-        role: props.role ?? BackofficeRole.BARBEIRO,
+        // role: props.role ?? BackofficeRole.BARBEIRO,
         isActive: props.isActive ?? true,
         createdAt: props.createdAt ?? new Date(),
         updatedAt: props.updatedAt ?? new Date(),

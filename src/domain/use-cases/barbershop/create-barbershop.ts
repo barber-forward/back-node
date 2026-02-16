@@ -1,8 +1,8 @@
-import { Either, left, right } from '@/domain/core/either'
-import { BarbershopRepository } from '@/domain/repositories/barbershop-repository'
 import { BackofficeUserRepository } from '@/domain/repositories/backoffice-user-repository'
-import { Barbershop } from '@/domain/entities/barbershop'
+import { BarbershopRepository } from '@/domain/repositories/barbershop-repository'
 import { UniqueEntityID } from '@/domain/core/unique-entity-id'
+import { Either, left, right } from '@/domain/core/either'
+import { Barbershop } from '@/domain/entities/barbershop'
 import { Injectable } from '@nestjs/common'
 
 interface CreateBarbershopUseCaseRequest {
@@ -20,13 +20,6 @@ interface CreateBarbershopUseCaseRequest {
   ownerId: string
 }
 
-type CreateBarbershopUseCaseResponse = Either<
-  BackofficeUserNotFoundError | BarbershopAlreadyExistsError,
-  {
-    barbershop: Barbershop
-  }
->
-
 export class BackofficeUserNotFoundError extends Error {
   constructor() {
     super('Usuário do backoffice não encontrado')
@@ -38,6 +31,13 @@ export class BarbershopAlreadyExistsError extends Error {
     super('Você já possui uma barbearia cadastrada')
   }
 }
+
+type CreateBarbershopUseCaseResponse = Either<
+  BackofficeUserNotFoundError | BarbershopAlreadyExistsError,
+  {
+    barbershop: Barbershop
+  }
+>
 
 @Injectable()
 export class CreateBarbershopUseCase {
