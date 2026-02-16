@@ -1,6 +1,6 @@
 @baseUrl = http://localhost:3333/api
-@authToken = 
-@barbershopId = 
+@authToken = eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiZTE1OTJkZi0xOGY1LTRjYjMtYjMxOS1kNzg1ZDM3MGExMjIiLCJpYXQiOjE3NzEyNDg1MzEsImV4cCI6MTc3MTI1MjEzMX0.XalWPrYyj6vobgOB0RnKttyeUts0LWdbRL5B6PG3ktewq9c81ETM04SNgnxAfsfAHdlizKE7JEHbxe7cc59NSfvZg2pX9h3O4pihZl4qjzRjBN1AxCiWRBo5zZ9naES0PB0LfdIdKF74V8CYiJjbH6EK4GrQOCsFKdJRZty0xujzY371AWpahbzh-yU9tdw3D6u5ebCfCN0qLkVTD-okEd6ve0mcc6IyszX9Fuh1RxkJlptOEbg0ev0Mf1dRML4T7UE1aYeWxHYK4BFKsrUqS4osiudGjx0cpoOvb6bo2EKxiaVDUj8Ed3IA0MR7-EpNhX0uMra0LgOc_4VwChbNsg
+@barbershopId = 29640943-b0f3-45be-85b1-9df879f891b6
 
 ### Login
 POST {{baseUrl}}/auth/sessions
