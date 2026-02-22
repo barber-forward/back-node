@@ -55,13 +55,7 @@ export class AuthenticateController {
     })
 
     return {
-      data: {
-        user: {
-          name: user.name,
-          email: user.email,
-        },
-        access_token: accessToken,
-      },
+      access_token: accessToken,
     }
   }
 }

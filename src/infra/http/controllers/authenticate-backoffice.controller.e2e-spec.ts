@@ -39,13 +39,7 @@ describe('AuthenticateBackofficeController (E2E)', () => {
 
     expect(response.statusCode).toBe(200)
     expect(response.body).toEqual({
-      data: {
-        user: {
-          name: 'Tiago Teste BKO',
-          email: 'tiagotestebko@example.com',
-        },
-        access_token: expect.any(String),
-      },
+      access_token: expect.any(String),
     })
   })
 })

@@ -53,13 +53,7 @@ export class AuthenticateBackofficeController {
     })
 
     return {
-      data: {
-        user: {
-          name: user.name,
-          email: user.email,
-        },
-        access_token: accessToken,
-      },
+      access_token: accessToken,
     }
   }
 }
