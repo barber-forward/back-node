@@ -1,5 +1,9 @@
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 import { PrismaService } from '@/infra/prisma/prisma.service'
+import { Public } from '@/infra/auth/public'
+import { JwtService } from '@nestjs/jwt'
+import { compare } from 'bcryptjs'
+import { z } from 'zod'
 import {
   Body,
   Controller,
@@ -8,9 +12,6 @@ import {
   UnauthorizedException,
   UsePipes,
 } from '@nestjs/common'
-import { JwtService } from '@nestjs/jwt'
-import { compare } from 'bcryptjs'
-import { z } from 'zod'
 
 const authenticateClientBodySchema = z.object({
   email: z.string().email(),
@@ -22,6 +23,7 @@ type AuthenticateClientBodySchemaType = z.infer<
 >
 
 @Controller('/auth')
+@Public()
 export class AuthenticateController {
   constructor(
     private prisma: PrismaService,
