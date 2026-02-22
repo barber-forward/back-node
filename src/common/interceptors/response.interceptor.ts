@@ -14,6 +14,7 @@ import { SKIP_RESPONSE_TRANSFORM_KEY } from '../decorators/skip-response-transfo
 export interface ApiResponse<T> {
   statusCode: number
   message?: string
+  success?: boolean
   data: T
   timestamp: string
   path: string
@@ -55,6 +56,24 @@ export class ResponseInterceptor<T> implements NestInterceptor<
           this.logger.log(
             `${request.method} ${request.url} - ${response.statusCode} - ${responseTime}ms`,
           )
+        }
+
+        if (
+          data &&
+          typeof data === 'object' &&
+          ('message' in data || 'success' in data)
+        ) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const { message, success, data: innerData, ...rest } = data as any
+
+          return {
+            statusCode: response.statusCode,
+            ...(success !== undefined && { success }),
+            ...(message && { message }),
+            data: innerData !== undefined ? innerData : rest,
+            timestamp: new Date().toISOString(),
+            path: request.url,
+          }
         }
 
         return {
