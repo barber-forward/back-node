@@ -1,8 +1,8 @@
-import { CurrentUser } from '@/infra/auth/current-user-decorator'
-import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard'
-import { UserPayloadType } from '@/infra/auth/jwt.strategy'
-import { PrismaService } from '@/infra/prisma/prisma.service'
 import { Controller, Get, NotFoundException, UseGuards } from '@nestjs/common'
+import { PrismaService } from '@/infra/database/prisma/prisma.service'
+import { CurrentUser } from '@/infra/auth/current-user-decorator'
+import { UserPayloadType } from '@/infra/auth/jwt.strategy'
+import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard'
 
 @Controller('/users')
 @UseGuards(JwtAuthGuard)

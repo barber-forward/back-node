@@ -1,15 +1,15 @@
-import { AuthenticateBackofficeController } from './controllers/authenticate-backoffice.controller'
 import { CreateAccountBackofficeController } from './controllers/create-account-backoffice.controller'
+import { AuthenticateBackofficeController } from './controllers/authenticate-backoffice.controller'
 import { CreateAccountClientController } from './controllers/create-account-client.controller'
 import { AuthenticateController } from './controllers/authenticate-client.controller'
 import { GetUserProfileController } from './controllers/get-user-profile.controller'
 import { BarbershopController } from './controllers/barbershop.controller'
-import { PrismaService } from '../prisma/prisma.service'
-import { Module } from '@nestjs/common'
+import { DatabaseModule } from '../database/database.module'
 import { AuthModule } from '../auth/auth.module'
+import { Module } from '@nestjs/common'
 
 @Module({
-  imports: [AuthModule],
+  imports: [AuthModule, DatabaseModule],
   controllers: [
     CreateAccountBackofficeController,
     AuthenticateBackofficeController,
@@ -18,6 +18,5 @@ import { AuthModule } from '../auth/auth.module'
     AuthenticateController,
     BarbershopController,
   ],
-  providers: [PrismaService],
 })
 export class HttpModule {}
