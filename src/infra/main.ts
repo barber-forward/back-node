@@ -13,8 +13,8 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ResponseInterceptor(app.get(Reflector)))
 
   const configService = app.get<ConfigService<Env, true>>(ConfigService)
-  const port = configService.get('PORT', { infer: true })
+  const port = configService.get('PORT', { infer: true }) ?? 3000
 
-  await app.listen(port)
+  await app.listen(port, '0.0.0.0')
 }
 bootstrap()
