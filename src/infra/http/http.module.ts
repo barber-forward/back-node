@@ -5,6 +5,7 @@ import { AuthenticateController } from './controllers/authenticate-client.contro
 import { GetUserProfileController } from './controllers/get-user-profile.controller'
 import { BarbershopController } from './controllers/barbershop.controller'
 import { HealthController } from './controllers/health.controller'
+import { RefreshTokenController } from './controllers/refresh-token.controller'
 import { DatabaseModule } from '../database/database.module'
 import { AuthModule } from '../auth/auth.module'
 import { Module } from '@nestjs/common'
@@ -19,6 +20,7 @@ import { Module } from '@nestjs/common'
     GetUserProfileController,
     AuthenticateController,
     BarbershopController,
+    RefreshTokenController,
   ],
 })
 export class HttpModule {}
