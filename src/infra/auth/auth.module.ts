@@ -17,7 +17,7 @@ import { PassportModule } from '@nestjs/passport'
         return {
           signOptions: {
             algorithm: 'RS256',
-            expiresIn: '1h',
+            expiresIn: '15m',
           },
           privateKey: Buffer.from(privateKey, 'base64'),
           publicKey: Buffer.from(publicKey, 'base64'),
