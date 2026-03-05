@@ -52,6 +52,15 @@ Content-Type: application/json
   "password": "123456"
 }
 
+### Atualizar perfil (Client)
+PATCH {{baseUrl}}/users/me
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "name": "Diego Fernandes"
+}
+
 ### Perfil do usuário
 GET {{baseUrl}}/users/me
 Authorization: Bearer {{authToken}}
