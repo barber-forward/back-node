@@ -1,8 +1,12 @@
 @baseUrl = http://localhost:3333/api
+
 @authToken = 
+
+@refreshToken = 
+
 @barbershopId = 
 
-### Login
+### Login (Client)
 POST {{baseUrl}}/auth/sessions
 Content-Type: application/json
 
@@ -11,7 +15,7 @@ Content-Type: application/json
   "password": "123456"
 }
 
-### Login BKO
+### Login BKO (Backoffice)
 POST {{baseUrl}}/backoffice/sessions
 Content-Type: application/json
 
@@ -20,7 +24,15 @@ Content-Type: application/json
   "password": "123456"
 }
 
-### Cadastro
+### Refresh Token (Client)
+POST {{baseUrl}}/auth/refresh
+Cookie: refresh_token={{refreshToken}}
+
+### Refresh Token (Backoffice)
+POST {{baseUrl}}/backoffice/refresh
+Cookie: refresh_token={{refreshToken}}
+
+### Cadastro (Client)
 POST {{baseUrl}}/auth/register
 Content-Type: application/json
 
@@ -30,7 +42,7 @@ Content-Type: application/json
   "password": "123456"
 }
 
-### Cadastro BKO
+### Cadastro (Backoffice)
 POST {{baseUrl}}/backoffice/accounts
 Content-Type: application/json
 
