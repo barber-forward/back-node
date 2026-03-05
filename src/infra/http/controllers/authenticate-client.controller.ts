@@ -3,6 +3,7 @@ import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { Public } from '@/infra/auth/public'
 import { JwtService } from '@nestjs/jwt'
 import { compare } from 'bcryptjs'
+import { createHash } from 'crypto'
 import { Response } from 'express'
 import { z } from 'zod'
 import {
@@ -58,6 +59,18 @@ export class AuthenticateController {
     const accessToken = this.jwt.sign({ sub: user.id })
 
     const refreshToken = this.jwt.sign({ sub: user.id }, { expiresIn: '7d' })
+
+    const tokenHash = createHash('sha256').update(refreshToken).digest('hex')
+    const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7)
+
+    await this.prisma.refreshToken.create({
+      data: {
+        tokenHash,
+        userId: user.id,
+        userType: 'client',
+        expiresAt,
+      },
+    })
 
     response.cookie('refresh_token', refreshToken, {
       httpOnly: true,
