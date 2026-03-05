@@ -1,5 +1,5 @@
 import { ClientRepository } from '@/domain/repositories/client-repository'
-import { UniqueEntityID } from '@/core/unique-entity-id'
+import { UniqueEntityID } from '@/domain/core/unique-entity-id'
 import { ClientEntity } from '@/domain/entities/client'
 import { PrismaService } from '../prisma.service'
 import { Injectable } from '@nestjs/common'
