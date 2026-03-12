@@ -7,62 +7,49 @@ datasource db {
   provider = "postgresql"
 }
 
-enum BackofficeRole {
+enum UserRole {
+  CUSTOMER
+  BARBER
   ADMIN
-  BARBEIRO
 }
 
 enum AppointmentStatus {
-  PENDENTE
-  CONFIRMADO
-  CANCELADO
-  CONCLUIDO
+  PENDING
+  CONFIRMED
+  CANCELED
+  COMPLETED
 }
 
 enum DayOfWeek {
-  DOMINGO
-  SEGUNDA
-  TERCA
-  QUARTA
-  QUINTA
-  SEXTA
-  SABADO
+  SUNDAY
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
 }
 
-// ===== USUÁRIOS DO BACKOFFICE (Admin + Barbeiros) =====
-model BackofficeUser {
-  id        String         @id @default(uuid())
-  name      String
-  email     String         @unique
-  password  String
-  phone     String?
-  avatar    String?
-  role      BackofficeRole @default(BARBEIRO)
-  isActive  Boolean        @default(true) @map("is_active")
-  createdAt DateTime       @default(now()) @map("created_at")
-  updatedAt DateTime       @updatedAt @map("updated_at")
-
-  barbershop Barbershop?
-
-  @@map("backoffice_users")
-}
-
-// ===== CLIENTES DO APP =====
-model Client {
+// ===== USUÁRIOS =====
+model User {
   id        String   @id @default(uuid())
   name      String
   email     String   @unique
   password  String
   phone     String?
   avatar    String?
+  role      UserRole @default(CUSTOMER)
   isActive  Boolean  @default(true) @map("is_active")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  appointments Appointment[]
-  favorites    Favorite[]
+  // Relações
+  barbershop    Barbershop?    @relation("OwnerBarbershop")
+  appointments  Appointment[]
+  favorites     Favorite[]
+  refreshTokens RefreshToken[]
 
-  @@map("clients")
+  @@map("users")
 }
 
 // ===== BARBEARIA =====
@@ -84,7 +71,7 @@ model Barbershop {
   updatedAt   DateTime @updatedAt @map("updated_at")
 
   ownerId       String            @unique @map("owner_id")
-  owner         BackofficeUser    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  owner         User              @relation("OwnerBarbershop", fields: [ownerId], references: [id], onDelete: Cascade)
   services      Service[]
   businessHours BusinessHour[]
   appointments  Appointment[]
@@ -113,8 +100,8 @@ model Service {
   name        String
   description String?
   duration    Int? // Duração em minutos
-  price       Float
-  oldPrice    Float?
+  price       Decimal  @db.Decimal(10, 2)
+  oldPrice    Decimal? @map("old_price") @db.Decimal(10, 2)
   imageUrl    String?
   isActive    Boolean  @default(true) @map("is_active")
   createdAt   DateTime @default(now()) @map("created_at")
@@ -144,23 +131,23 @@ model BusinessHour {
 
 // ===== AGENDAMENTOS =====
 model Appointment {
-  id        String            @id @default(uuid())
-  date      DateTime // Data e hora do agendamento
-  status    AppointmentStatus @default(PENDENTE)
-  notes     String? // Observações do cliente
-  createdAt DateTime          @default(now()) @map("created_at")
-  updatedAt DateTime          @updatedAt @map("updated_at")
+  id          String            @id @default(uuid())
+  scheduledAt DateTime // Data e hora do agendamento
+  status      AppointmentStatus @default(PENDING)
+  notes       String? // Observações do cliente
+  createdAt   DateTime          @default(now()) @map("created_at")
+  updatedAt   DateTime          @updatedAt @map("updated_at")
 
   clientId     String     @map("client_id")
-  client       Client     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  client       User       @relation(fields: [clientId], references: [id], onDelete: Cascade)
   barbershopId String     @map("barbershop_id")
   barbershop   Barbershop @relation(fields: [barbershopId], references: [id], onDelete: Cascade)
   serviceId    String     @map("service_id")
   service      Service    @relation(fields: [serviceId], references: [id], onDelete: Cascade)
 
   @@index([clientId, status])
-  @@index([barbershopId, date])
-  @@index([date, status])
+  @@index([barbershopId, scheduledAt])
+  @@index([scheduledAt, status])
   @@map("appointments")
 }
 
@@ -171,7 +158,7 @@ model Favorite {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   clientId     String     @map("client_id")
-  client       Client     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  client       User       @relation(fields: [clientId], references: [id], onDelete: Cascade)
   barbershopId String     @map("barbershop_id")
   barbershop   Barbershop @relation(fields: [barbershopId], references: [id], onDelete: Cascade)
 
@@ -184,11 +171,11 @@ model RefreshToken {
   id        String    @id @default(uuid())
   tokenHash String    @unique @map("token_hash") // SHA-256 do JWT
   userId    String    @map("user_id")
-  userType  String    @map("user_type") // 'client' | 'backoffice'
   expiresAt DateTime  @map("expires_at")
   revokedAt DateTime? @map("revoked_at")
   createdAt DateTime  @default(now()) @map("created_at")
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId, userType])
+  @@index([userId])
   @@map("refresh_tokens")
 }
