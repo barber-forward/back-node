@@ -31,7 +31,7 @@ describe('CreateAccountClientController (E2E)', () => {
 
     expect(response.statusCode).toBe(201)
 
-    const userOnDatebase = await prisma.client.findUnique({
+    const userOnDatebase = await prisma.user.findUnique({
       where: {
         email: 'tiagoteste@example.com',
       },
