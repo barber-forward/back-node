@@ -87,6 +87,12 @@ export class BarbershopController {
       throw new NotFoundException('Usuário não encontrado.')
     }
 
+    if (appUser.role !== 'BARBER') {
+      throw new ForbiddenException(
+        'Apenas barbeiros podem criar perfil de barbearia.',
+      )
+    }
+
     if (appUser.barbershop) {
       throw new ConflictException('Você já possui uma barbearia cadastrada.')
     }
