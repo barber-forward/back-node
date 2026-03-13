@@ -1,26 +1,26 @@
-import { ClientRepository } from '@/domain/repositories/client-repository'
+import { UserRepository } from '@/domain/repositories/user-repository'
 import { UniqueEntityID } from '@/domain/core/unique-entity-id'
-import { ClientEntity } from '@/domain/entities/client'
+import { UserEntity } from '@/domain/entities/user'
 import { PrismaService } from '../prisma.service'
 import { Injectable } from '@nestjs/common'
 
 @Injectable()
-export class PrismaClientRepository implements ClientRepository {
+export class PrismaUserRepository implements UserRepository {
   constructor(private prisma: PrismaService) {}
 
-  async create(client: ClientEntity): Promise<void> {
-    await this.prisma.client.create({
+  async create(user: UserEntity): Promise<void> {
+    await this.prisma.user.create({
       data: {
-        id: client.id.toString(),
-        name: client.name,
-        email: client.email,
-        password: client.passwordHash,
+        id: user.id.toString(),
+        name: user.name,
+        email: user.email,
+        password: user.passwordHash,
       },
     })
   }
 
-  async findById(id: string): Promise<ClientEntity | null> {
-    const client = await this.prisma.client.findUnique({
+  async findById(id: string): Promise<UserEntity | null> {
+    const client = await this.prisma.user.findUnique({
       where: { id },
     })
 
@@ -28,7 +28,7 @@ export class PrismaClientRepository implements ClientRepository {
       return null
     }
 
-    return ClientEntity.create(
+    return UserEntity.create(
       {
         name: client.name,
         email: client.email,
@@ -38,8 +38,8 @@ export class PrismaClientRepository implements ClientRepository {
     )
   }
 
-  async findByEmail(email: string): Promise<ClientEntity | null> {
-    const client = await this.prisma.client.findUnique({
+  async findByEmail(email: string): Promise<UserEntity | null> {
+    const client = await this.prisma.user.findUnique({
       where: { email },
     })
 
@@ -47,7 +47,7 @@ export class PrismaClientRepository implements ClientRepository {
       return null
     }
 
-    return ClientEntity.create(
+    return UserEntity.create(
       {
         name: client.name,
         email: client.email,
@@ -57,8 +57,8 @@ export class PrismaClientRepository implements ClientRepository {
     )
   }
 
-  async save(client: ClientEntity): Promise<void> {
-    await this.prisma.client.update({
+  async save(client: UserEntity): Promise<void> {
+    await this.prisma.user.update({
       where: { id: client.id.toString() },
       data: {
         name: client.name,
@@ -69,7 +69,7 @@ export class PrismaClientRepository implements ClientRepository {
   }
 
   async delete(id: string): Promise<void> {
-    await this.prisma.client.delete({
+    await this.prisma.user.delete({
       where: { id },
     })
   }

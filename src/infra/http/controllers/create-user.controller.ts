@@ -11,27 +11,25 @@ import {
   UsePipes,
 } from '@nestjs/common'
 
-const createAccountBackofficeBodySchema = z.object({
+const createUserBodySchema = z.object({
   name: z.string().min(3),
   email: z.string().email(),
   password: z.string().min(6),
 })
 
-type CreateAccountBackofficeBodySchemaType = z.infer<
-  typeof createAccountBackofficeBodySchema
->
+type CreateUserBodySchemaType = z.infer<typeof createUserBodySchema>
 
-@Controller('/backoffice/accounts')
-export class CreateAccountBackofficeController {
+@Controller('/auth')
+export class CreateUserController {
   constructor(private prisma: PrismaService) {}
 
-  @Post()
+  @Post('/register')
   @HttpCode(201)
-  @UsePipes(new ZodValidationPipe(createAccountBackofficeBodySchema))
-  async handle(@Body() body: CreateAccountBackofficeBodySchemaType) {
+  @UsePipes(new ZodValidationPipe(createUserBodySchema))
+  async handle(@Body() body: CreateUserBodySchemaType) {
     const { name, email, password } = body
 
-    const userWithSameEmail = await this.prisma.backofficeUser.findUnique({
+    const userWithSameEmail = await this.prisma.user.findUnique({
       where: { email },
     })
 
@@ -41,7 +39,7 @@ export class CreateAccountBackofficeController {
 
     const hashedPassword = await hash(password, 8)
 
-    await this.prisma.backofficeUser.create({
+    await this.prisma.user.create({
       data: {
         name,
         email,

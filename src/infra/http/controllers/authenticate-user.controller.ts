@@ -1,5 +1,6 @@
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 import { PrismaService } from '@/infra/database/prisma/prisma.service'
+import { Public } from '@/infra/auth/public'
 import { JwtService } from '@nestjs/jwt'
 import { compare } from 'bcryptjs'
 import { createHash } from 'crypto'
@@ -15,32 +16,31 @@ import {
   UsePipes,
 } from '@nestjs/common'
 
-const authenticateBackofficeBodySchema = z.object({
+const authenticateUserBodySchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
 })
 
-type AuthenticateBackofficeBodySchemaType = z.infer<
-  typeof authenticateBackofficeBodySchema
->
+type AuthenticateUserBodySchemaType = z.infer<typeof authenticateUserBodySchema>
 
-@Controller('/backoffice')
-export class AuthenticateBackofficeController {
+@Controller('/auth')
+@Public()
+export class AuthenticateUserController {
   constructor(
     private prisma: PrismaService,
     private jwt: JwtService,
   ) {}
 
-  @Post('/sessions')
+  @Post('/login')
   @HttpCode(200)
-  @UsePipes(new ZodValidationPipe(authenticateBackofficeBodySchema))
+  @UsePipes(new ZodValidationPipe(authenticateUserBodySchema))
   async handle(
-    @Body() body: AuthenticateBackofficeBodySchemaType,
+    @Body() body: AuthenticateUserBodySchemaType,
     @Res({ passthrough: true }) response: Response,
   ) {
     const { email, password } = body
 
-    const user = await this.prisma.backofficeUser.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: { email },
     })
 
@@ -65,7 +65,6 @@ export class AuthenticateBackofficeController {
       data: {
         tokenHash,
         userId: user.id,
-        userType: 'backoffice',
         expiresAt,
       },
     })
@@ -74,7 +73,7 @@ export class AuthenticateBackofficeController {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      path: '/api/backoffice/refresh',
+      path: '/api/auth/refresh',
       maxAge: 1000 * 60 * 60 * 24 * 7,
     })
 
