@@ -6,8 +6,8 @@
 
 @barbershopId = 
 
-### Login (Client)
-POST {{baseUrl}}/auth/sessions
+### Login
+POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
@@ -15,24 +15,20 @@ Content-Type: application/json
   "password": "123456"
 }
 
-### Login BKO (Backoffice)
-POST {{baseUrl}}/backoffice/sessions
+### Login do barbeiro
+POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "diegobko@rocketseat2.com.br",
+  "email": "joao@barbearia.com",
   "password": "123456"
 }
 
-### Refresh Token (Client)
+### Refresh Token
 POST {{baseUrl}}/auth/refresh
 Cookie: refresh_token={{refreshToken}}
 
-### Refresh Token (Backoffice)
-POST {{baseUrl}}/backoffice/refresh
-Cookie: refresh_token={{refreshToken}}
-
-### Cadastro (Client)
+### Cadastro de usuário
 POST {{baseUrl}}/auth/register
 Content-Type: application/json
 
@@ -42,47 +38,34 @@ Content-Type: application/json
   "password": "123456"
 }
 
-### Cadastro (Backoffice)
-POST {{baseUrl}}/backoffice/accounts
+### Cadastro de barbeiro
+POST {{baseUrl}}/auth/register
 Content-Type: application/json
 
 {
-  "name": "Diego Fernandes BKO2",
-  "email": "diegobko@rocketseat2.com.br",
+  "name": "Barbearia do João",
+  "email": "joao@barbearia.com",
   "password": "123456"
 }
 
-### Atualizar perfil (Client)
+### Atualizar perfil
 PATCH {{baseUrl}}/users/me
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-  "name": "Diego Fernandes"
+"name": "Diego Fernandes"
 }
 
 ### Perfil do usuário
 GET {{baseUrl}}/users/me
+Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 ### Criar barbearia
 POST {{baseUrl}}/barbershops
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
-
-# {
-#   "name": "Barbearia do Tiago",
-#   "phone": "11999999999",
-#   "address": "Rua A, 123",
-#   "city": "São Paulo",
-#   "state": "SP",
-#   "description": "Descrição opcional",
-#   "email": "contato@example.com",
-#   "avatar": "https://i.pravatar.cc/150?img=2",
-#   "zipCode": "01234-567",
-#   "latitude": -23.55052,
-#   "longitude": -46.633308
-# }
 
 {
   "name": "Barbearia do Lucas",
@@ -107,7 +90,7 @@ Authorization: Bearer {{authToken}}
   "address": "Rua A, 1234"
 }
 
-### Buscar barbearia por ID
+### Buscar barbearia
 GET {{baseUrl}}/barbershops/{{barbershopId}}
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
