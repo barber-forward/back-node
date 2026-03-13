@@ -22,13 +22,13 @@ import {
 
 const createBarbershopBodySchema = z.object({
   name: z.string().min(3),
-  description: z.string().optional(),
-  email: z.string().email().optional(),
+  description: z.string(),
+  email: z.string().email(),
   phone: z.string(),
   avatar: z.string().url().optional(),
   address: z.string(),
-  city: z.string(),
-  state: z.string(),
+  city: z.string().optional(),
+  state: z.string().optional(),
   zipCode: z.string().optional(),
   latitude: z.coerce.number().optional(),
   longitude: z.coerce.number().optional(),

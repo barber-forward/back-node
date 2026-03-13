@@ -3,13 +3,13 @@ import { Entity } from '../core/entity'
 
 export interface BarbershopProps {
   name: string
-  description?: string
-  email?: string
+  description: string
+  email: string
   phone: string
   avatar?: string
   address: string
-  city: string
-  state: string
+  city?: string
+  state?: string
   zipCode?: string
   latitude?: number
   longitude?: number
@@ -85,12 +85,12 @@ export class BarbershopEntity extends Entity<BarbershopProps> {
     this.touch()
   }
 
-  set description(description: string | undefined) {
+  set description(description: string) {
     this.props.description = description
     this.touch()
   }
 
-  set email(email: string | undefined) {
+  set email(email: string) {
     this.props.email = email
     this.touch()
   }
@@ -110,12 +110,12 @@ export class BarbershopEntity extends Entity<BarbershopProps> {
     this.touch()
   }
 
-  set city(city: string) {
+  set city(city: string | undefined) {
     this.props.city = city
     this.touch()
   }
 
-  set state(state: string) {
+  set state(state: string | undefined) {
     this.props.state = state
     this.touch()
   }
@@ -149,13 +149,13 @@ export class BarbershopEntity extends Entity<BarbershopProps> {
     const barbershop = new BarbershopEntity(
       {
         name: props.name!,
-        description: props.description,
-        email: props.email,
+        description: props.description!,
+        email: props.email!,
         phone: props.phone!,
         avatar: props.avatar,
         address: props.address!,
-        city: props.city!,
-        state: props.state!,
+        city: props.city,
+        state: props.state,
         zipCode: props.zipCode,
         latitude: props.latitude,
         longitude: props.longitude,

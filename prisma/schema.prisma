@@ -56,13 +56,13 @@ model User {
 model Barbershop {
   id          String   @id @default(uuid())
   name        String
-  description String?
-  email       String?
+  description String
+  email       String
   phone       String
   avatar      String?
   address     String
-  city        String
-  state       String
+  city        String?
+  state       String?
   zipCode     String?  @map("zip_code")
   latitude    Float?
   longitude   Float?
