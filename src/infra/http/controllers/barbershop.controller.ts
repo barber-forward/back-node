@@ -78,16 +78,22 @@ export class BarbershopController {
   ) {
     const userId = user.sub
 
-    const backofficeUser = await this.prisma.backofficeUser.findUnique({
+    const appUser = await this.prisma.user.findUnique({
       where: { id: userId },
       include: { barbershop: true },
     })
 
-    if (!backofficeUser) {
-      throw new NotFoundException('Usuário do backoffice não encontrado.')
+    if (!appUser) {
+      throw new NotFoundException('Usuário não encontrado.')
     }
 
-    if (backofficeUser.barbershop) {
+    if (appUser.role !== 'BARBER') {
+      throw new ForbiddenException(
+        'Apenas barbeiros podem criar perfil de barbearia.',
+      )
+    }
+
+    if (appUser.barbershop) {
       throw new ConflictException('Você já possui uma barbearia cadastrada.')
     }
 

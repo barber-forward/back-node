@@ -1,8 +1,6 @@
-import { CreateAccountBackofficeController } from './controllers/create-account-backoffice.controller'
-import { AuthenticateBackofficeController } from './controllers/authenticate-backoffice.controller'
-import { CreateAccountClientController } from './controllers/create-account-client.controller'
+import { CreateUserController } from './controllers/create-user.controller'
+import { AuthenticateUserController } from './controllers/authenticate-user.controller'
 import { UpdateUserProfileController } from './controllers/update-user-profile.controller'
-import { AuthenticateController } from './controllers/authenticate-client.controller'
 import { GetUserProfileController } from './controllers/get-user-profile.controller'
 import { RefreshTokenController } from './controllers/refresh-token.controller'
 import { BarbershopController } from './controllers/barbershop.controller'
@@ -14,13 +12,11 @@ import { Module } from '@nestjs/common'
 @Module({
   imports: [AuthModule, DatabaseModule],
   controllers: [
-    CreateAccountBackofficeController,
-    AuthenticateBackofficeController,
-    CreateAccountClientController,
+    CreateUserController,
     UpdateUserProfileController,
     GetUserProfileController,
     RefreshTokenController,
-    AuthenticateController,
+    AuthenticateUserController,
     BarbershopController,
     HealthController,
   ],

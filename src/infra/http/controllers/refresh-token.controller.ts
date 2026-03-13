@@ -26,28 +26,13 @@ export class RefreshTokenController {
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
   ) {
-    return this.refresh(request, response, '/api/auth/refresh', 'client')
-  }
-
-  @Post('/backoffice/refresh')
-  @HttpCode(200)
-  async handleBackoffice(
-    @Req() request: Request,
-    @Res({ passthrough: true }) response: Response,
-  ) {
-    return this.refresh(
-      request,
-      response,
-      '/api/backoffice/refresh',
-      'backoffice',
-    )
+    return this.refresh(request, response, '/api/auth/refresh')
   }
 
   private async refresh(
     request: Request,
     response: Response,
     cookiePath: string,
-    userType: 'client' | 'backoffice',
   ) {
     const token: string | undefined = request.cookies?.refresh_token
 
@@ -75,16 +60,10 @@ export class RefreshTokenController {
       )
     }
 
-    const userExists =
-      userType === 'client'
-        ? await this.prisma.client.findUnique({
-            where: { id: payload.sub },
-            select: { id: true },
-          })
-        : await this.prisma.backofficeUser.findUnique({
-            where: { id: payload.sub },
-            select: { id: true },
-          })
+    const userExists = await this.prisma.user.findUnique({
+      where: { id: payload.sub },
+      select: { id: true },
+    })
 
     if (!userExists) {
       throw new UnauthorizedException('Usuário não encontrado.')
@@ -112,7 +91,6 @@ export class RefreshTokenController {
       data: {
         tokenHash: newTokenHash,
         userId: payload.sub,
-        userType,
         expiresAt,
       },
     })

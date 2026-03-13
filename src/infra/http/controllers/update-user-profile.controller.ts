@@ -47,7 +47,7 @@ export class UpdateUserProfileController {
       )
     }
 
-    const client = await this.prisma.client.findUnique({
+    const client = await this.prisma.user.findUnique({
       where: { id: user.sub },
     })
 
@@ -56,7 +56,7 @@ export class UpdateUserProfileController {
     }
 
     try {
-      const updatedClient = await this.prisma.client.update({
+      const updatedClient = await this.prisma.user.update({
         where: { id: user.sub },
         data,
         select: {

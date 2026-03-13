@@ -11,12 +11,13 @@ export class GetUserProfileController {
 
   @Get('/me')
   async handle(@CurrentUser() user: UserPayloadType) {
-    const client = await this.prisma.client.findUnique({
+    const client = await this.prisma.user.findUnique({
       where: { id: user.sub },
       select: {
         id: true,
         name: true,
         email: true,
+        role: true,
       },
     })
 

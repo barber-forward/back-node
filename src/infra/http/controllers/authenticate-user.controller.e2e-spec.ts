@@ -5,7 +5,7 @@ import { AppModule } from '@/infra/app.module'
 import { Test } from '@nestjs/testing'
 import { hash } from 'bcryptjs'
 
-describe('AuthenticateBackofficeController (E2E)', () => {
+describe('AuthenticateClientController (E2E)', () => {
   let app: INestApplication
   let prisma: PrismaService
 
@@ -21,19 +21,19 @@ describe('AuthenticateBackofficeController (E2E)', () => {
     await app.init()
   })
 
-  test('[POST] /backoffice/sessions', async () => {
-    await prisma.backofficeUser.create({
+  test('[POST] /auth/sessions', async () => {
+    await prisma.user.create({
       data: {
-        name: 'Tiago Teste BKO',
-        email: 'tiagotestebko@example.com',
+        name: 'Tiago Teste',
+        email: 'tiagoteste@example.com',
         password: await hash('123456', 8),
       },
     })
 
     const response = await request(app.getHttpServer())
-      .post('/backoffice/sessions')
+      .post('/auth/sessions')
       .send({
-        email: 'tiagotestebko@example.com',
+        email: 'tiagoteste@example.com',
         password: '123456',
       })
 
