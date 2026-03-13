@@ -1,7 +1,7 @@
 import { UniqueEntityID } from '../core/unique-entity-id'
 import { Entity } from '../core/entity'
 
-export interface ClientProps {
+export interface UserProps {
   name: string
   email: string
   passwordHash: string
@@ -12,7 +12,7 @@ export interface ClientProps {
   updatedAt: Date
 }
 
-export class ClientEntity extends Entity<ClientProps> {
+export class UserEntity extends Entity<UserProps> {
   get name() {
     return this.props.name
   }
@@ -79,8 +79,8 @@ export class ClientEntity extends Entity<ClientProps> {
     this.props.updatedAt = new Date()
   }
 
-  static create(props: Partial<ClientProps>, id?: UniqueEntityID) {
-    const client = new ClientEntity(
+  static create(props: Partial<UserProps>, id?: UniqueEntityID) {
+    const user = new UserEntity(
       {
         name: props.name!,
         email: props.email!,
@@ -94,6 +94,6 @@ export class ClientEntity extends Entity<ClientProps> {
       id,
     )
 
-    return client
+    return user
   }
 }

@@ -1,9 +1,9 @@
-import { ClientRepository } from '@/domain/repositories/client-repository'
+import { UserRepository } from '@/domain/repositories/user-repository'
 import { Either, left, right } from '@/domain/core/either'
 import { Injectable } from '@nestjs/common'
 import { compare } from 'bcryptjs'
 
-interface AuthenticateClientUseCaseRequest {
+interface AuthenticateUserUseCaseRequest {
   email: string
   password: string
 }
@@ -14,40 +14,40 @@ export class InvalidCredentialsError extends Error {
   }
 }
 
-type AuthenticateClientUseCaseResponse = Either<
+type AuthenticateUserUseCaseResponse = Either<
   InvalidCredentialsError,
   {
-    clientId: string
+    userId: string
   }
 >
 
 @Injectable()
-export class AuthenticateClientUseCase {
-  constructor(private clientRepository: ClientRepository) {}
+export class AuthenticateUserUseCase {
+  constructor(private userRepository: UserRepository) {}
 
   async execute(
-    request: AuthenticateClientUseCaseRequest,
-  ): Promise<AuthenticateClientUseCaseResponse> {
+    request: AuthenticateUserUseCaseRequest,
+  ): Promise<AuthenticateUserUseCaseResponse> {
     const { email, password } = request
 
-    const client = await this.clientRepository.findByEmail(email)
+    const user = await this.userRepository.findByEmail(email)
 
-    if (!client) {
+    if (!user) {
       return left(new InvalidCredentialsError())
     }
 
-    if (!client.isActive) {
+    if (!user.isActive) {
       return left(new InvalidCredentialsError())
     }
 
-    const isPasswordValid = await compare(password, client.passwordHash)
+    const isPasswordValid = await compare(password, user.passwordHash)
 
     if (!isPasswordValid) {
       return left(new InvalidCredentialsError())
     }
 
     return right({
-      clientId: client.id.toString(),
+      userId: user.id.toString(),
     })
   }
 }
