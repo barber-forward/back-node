@@ -1,6 +1,6 @@
-import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard'
 import { UserPayloadType } from '@/infra/auth/jwt.strategy'
+import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { Controller, Get, NotFoundException, UseGuards } from '@nestjs/common'
 
@@ -18,6 +18,8 @@ export class GetUserProfileController {
         name: true,
         email: true,
         role: true,
+        phone: true,
+        avatar: true,
       },
     })
 

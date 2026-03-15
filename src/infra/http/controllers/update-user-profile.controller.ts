@@ -63,7 +63,9 @@ export class UpdateUserProfileController {
           id: true,
           name: true,
           email: true,
+          role: true,
           phone: true,
+          avatar: true,
         },
       })
 
