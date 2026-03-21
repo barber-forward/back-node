@@ -104,3 +104,41 @@ Authorization: Bearer {{authToken}}
 DELETE {{baseUrl}}/barbershops/{{barbershopId}}
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
+
+### ============================================================
+### SERVIÇOS
+### ============================================================
+
+@serviceId = 
+
+### Criar serviço
+POST {{baseUrl}}/services
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "name": "Corte masculino",
+  "description": "Corte social ou degradê",
+  "price": 35.00,
+  "duration": 30,
+  "imageUrl": "https://i.pravatar.cc/150?img=10"
+}
+
+### Listar serviços do barbeiro
+GET {{baseUrl}}/services
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+### Atualizar serviço
+PATCH {{baseUrl}}/services/{{serviceId}}
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "price": 35
+}
+
+### Deletar serviço
+DELETE {{baseUrl}}/services/{{serviceId}}
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
