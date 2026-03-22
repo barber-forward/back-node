@@ -87,9 +87,9 @@ export class BarbershopController {
       throw new NotFoundException('Usuário não encontrado.')
     }
 
-    if (appUser.role !== 'BARBER') {
+    if (appUser.role !== 'BARBER' && appUser.role !== 'ADMIN') {
       throw new ForbiddenException(
-        'Apenas barbeiros podem criar perfil de barbearia.',
+        'Apenas barbeiros e administradores podem criar perfil de barbearia.',
       )
     }
 
@@ -104,7 +104,11 @@ export class BarbershopController {
       },
     })
 
-    return barbershop
+    return {
+      success: true,
+      message: 'Barbearia criada com sucesso.',
+      data: barbershop,
+    }
   }
 
   @Get()
@@ -157,7 +161,9 @@ export class BarbershopController {
     ])
 
     return {
-      result,
+      success: true,
+      message: 'Barbearias recuperadas com sucesso.',
+      data: result,
       pagination: {
         page: currentPage,
         pageSize: currentPageSize,
@@ -193,7 +199,11 @@ export class BarbershopController {
       throw new NotFoundException('Barbearia não encontrada.')
     }
 
-    return barbershop
+    return {
+      success: true,
+      message: 'Barbearia recuperada com sucesso.',
+      data: barbershop,
+    }
   }
 
   @Patch(':id')
@@ -226,11 +236,15 @@ export class BarbershopController {
       data: body,
     })
 
-    return updatedBarbershop
+    return {
+      success: true,
+      message: 'Barbearia atualizada com sucesso.',
+      data: updatedBarbershop,
+    }
   }
 
   @Delete(':id')
-  @HttpCode(204)
+  @HttpCode(200)
   @UseGuards(JwtAuthGuard)
   async delete(@Param('id') id: string, @CurrentUser() user: UserPayloadType) {
     const userId = user.sub
@@ -252,5 +266,10 @@ export class BarbershopController {
     await this.prisma.barbershop.delete({
       where: { id },
     })
+
+    return {
+      success: true,
+      message: 'Barbearia deletada com sucesso.',
+    }
   }
 }

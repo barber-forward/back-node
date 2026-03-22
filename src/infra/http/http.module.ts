@@ -5,6 +5,7 @@ import { RefreshTokenController } from './controllers/refresh-token.controller'
 import { CreateUserController } from './controllers/create-user.controller'
 import { BarbershopController } from './controllers/barbershop.controller'
 import { ServiceController } from './controllers/service.controller'
+import { BusinessHourController } from './controllers/business-hours.controller'
 import { HealthController } from './controllers/health.controller'
 import { DatabaseModule } from '../database/database.module'
 import { AuthModule } from '../auth/auth.module'
@@ -20,6 +21,7 @@ import { Module } from '@nestjs/common'
     AuthenticateUserController,
     BarbershopController,
     ServiceController,
+    BusinessHourController,
     HealthController,
   ],
 })

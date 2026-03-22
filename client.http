@@ -4,8 +4,6 @@
 
 @refreshToken = 
 
-@barbershopId = 
-
 ### Login
 POST {{baseUrl}}/auth/login
 Content-Type: application/json
@@ -54,13 +52,19 @@ Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-"name": "Diego Fernandes"
+"name": "João Fernandes"
 }
 
 ### Perfil do usuário
 GET {{baseUrl}}/users/me
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
+
+### ============================================================
+### BARBEARIAS
+### ============================================================
+
+@barbershopId = 
 
 ### Criar barbearia
 POST {{baseUrl}}/barbershops
@@ -95,8 +99,13 @@ GET {{baseUrl}}/barbershops/{{barbershopId}}
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
-### Listar barbearias
-GET {{baseUrl}}/barbershops
+### Listar barbearias (com paginação)
+GET {{baseUrl}}/barbershops?page=1&pageSize=10
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+### Listar barbearias (filtros + paginação)
+GET {{baseUrl}}/barbershops?city=Brasília&state=DF&isActive=true&page=1&pageSize=10
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
@@ -142,3 +151,47 @@ Authorization: Bearer {{authToken}}
 DELETE {{baseUrl}}/services/{{serviceId}}
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
+
+@businessHourId = 
+
+### ============================================================
+### HORÁRIOS DE FUNCIONAMENTO
+### ============================================================
+
+### Listar horários
+GET {{baseUrl}}/business-hours
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+### Salvar todos os horários (upsert completo — todos os dias da semana)
+PATCH {{baseUrl}}/business-hours
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+[
+  { "dayOfWeek": "SUNDAY",    "openTime": "00:00", "closeTime": "00:00", "isClosed": true  },
+  { "dayOfWeek": "MONDAY",    "openTime": "08:00", "closeTime": "20:00", "isClosed": false },
+  { "dayOfWeek": "TUESDAY",   "openTime": "08:00", "closeTime": "20:00", "isClosed": false },
+  { "dayOfWeek": "WEDNESDAY", "openTime": "08:00", "closeTime": "20:00", "isClosed": false },
+  { "dayOfWeek": "THURSDAY",  "openTime": "08:00", "closeTime": "20:00", "isClosed": false },
+  { "dayOfWeek": "FRIDAY",    "openTime": "08:00", "closeTime": "20:00", "isClosed": false },
+  { "dayOfWeek": "SATURDAY",  "openTime": "09:00", "closeTime": "18:00", "isClosed": false }
+]
+
+### Atualizar apenas segunda-feira
+PATCH {{baseUrl}}/business-hours
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+[
+  { "dayOfWeek": "MONDAY", "openTime": "09:00", "closeTime": "19:00", "isClosed": false }
+]
+
+### Fechar domingo (toggle isClosed)
+PATCH {{baseUrl}}/business-hours
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+[
+  { "dayOfWeek": "SUNDAY", "openTime": "00:00", "closeTime": "00:00", "isClosed": true }
+]

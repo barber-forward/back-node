@@ -89,7 +89,11 @@ export class ServiceController {
       },
     })
 
-    return service
+    return {
+      success: true,
+      message: 'Serviço criado com sucesso.',
+      data: service,
+    }
   }
 
   @Get()
@@ -115,7 +119,11 @@ export class ServiceController {
       orderBy: { createdAt: 'desc' },
     })
 
-    return services
+    return {
+      success: true,
+      message: 'Serviços recuperados com sucesso.',
+      data: services,
+    }
   }
 
   @Patch(':id')
@@ -166,7 +174,11 @@ export class ServiceController {
       data: body,
     })
 
-    return updatedService
+    return {
+      success: true,
+      message: 'Serviço atualizado com sucesso.',
+      data: updatedService,
+    }
   }
 
   @Delete(':id')
@@ -211,6 +223,9 @@ export class ServiceController {
       where: { id },
     })
 
-    return { message: 'Serviço deletado com sucesso.' }
+    return {
+      success: true,
+      message: 'Serviço deletado com sucesso.',
+    }
   }
 }
