@@ -4,6 +4,10 @@
 
 @refreshToken = 
 
+### ============================================================
+### AUTENTICAÇÃO
+### ============================================================
+
 ### Login
 POST {{baseUrl}}/auth/login
 Content-Type: application/json
@@ -170,7 +174,7 @@ Authorization: Bearer {{authToken}}
 
 [
   { "dayOfWeek": "SUNDAY",    "openTime": "00:00", "closeTime": "00:00", "isClosed": true  },
-  { "dayOfWeek": "MONDAY",    "openTime": "08:00", "closeTime": "20:00", "isClosed": false },
+  { "dayOfWeek": "MONDAY",    "openTime": "07:00", "closeTime": "20:00", "isClosed": false },
   { "dayOfWeek": "TUESDAY",   "openTime": "08:00", "closeTime": "20:00", "isClosed": false },
   { "dayOfWeek": "WEDNESDAY", "openTime": "08:00", "closeTime": "20:00", "isClosed": false },
   { "dayOfWeek": "THURSDAY",  "openTime": "08:00", "closeTime": "20:00", "isClosed": false },
@@ -195,3 +199,98 @@ Authorization: Bearer {{authToken}}
 [
   { "dayOfWeek": "SUNDAY", "openTime": "00:00", "closeTime": "00:00", "isClosed": true }
 ]
+
+### ============================================================
+### INTERVALOS / PAUSAS (BreakTimes)
+### ============================================================
+
+@breakTimeId = 
+
+### Criar intervalo (almoço segunda a sexta)
+POST {{baseUrl}}/break-times
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "dayOfWeek": "MONDAY",
+  "startTime": "12:00",
+  "endTime": "13:00"
+}
+
+### Listar intervalos
+GET {{baseUrl}}/break-times
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+### Deletar intervalo
+DELETE {{baseUrl}}/break-times/{{breakTimeId}}
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+### ============================================================
+### DISPONIBILIDADE (Horários livres)
+### ============================================================
+
+### Consultar horários disponíveis
+GET {{baseUrl}}/availability?barbershopId={{barbershopId}}&serviceId={{serviceId}}&date=2026-03-23
+Content-Type: application/json
+
+### ============================================================
+### AGENDAMENTOS
+### ============================================================
+
+@appointmentId = 
+
+### Criar agendamento (cliente)
+POST {{baseUrl}}/appointments
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "barbershopId": "{{barbershopId}}",
+  "serviceId": "{{serviceId}}",
+  "date": "2026-03-23",
+  "startTime": "09:00"
+}
+
+### Meus agendamentos (cliente)
+GET {{baseUrl}}/appointments/my
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+### Meus agendamentos filtrados por status
+GET {{baseUrl}}/appointments/my?status=PENDING
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+### Agendamentos da barbearia (barbeiro)
+GET {{baseUrl}}/appointments/barbershop?date=2026-03-23
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+### Confirmar agendamento (barbeiro)
+PATCH {{baseUrl}}/appointments/{{appointmentId}}/status
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "status": "CONFIRMED"
+}
+
+### Cancelar agendamento (cliente ou barbeiro)
+PATCH {{baseUrl}}/appointments/{{appointmentId}}/status
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "status": "CANCELED"
+}
+
+### Concluir agendamento (barbeiro)
+PATCH {{baseUrl}}/appointments/{{appointmentId}}/status
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "status": "COMPLETED"
+}
