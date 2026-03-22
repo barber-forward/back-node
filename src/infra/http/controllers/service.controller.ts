@@ -23,7 +23,7 @@ const createServiceBodySchema = z.object({
   description: z.string().optional(),
   price: z.coerce.number().positive(),
   oldPrice: z.coerce.number().positive().optional(),
-  duration: z.coerce.number().int().positive().optional(),
+  duration: z.coerce.number().int().positive(),
   imageUrl: z.string().url().optional(),
 })
 

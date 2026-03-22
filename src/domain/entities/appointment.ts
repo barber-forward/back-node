@@ -4,6 +4,8 @@ import { Entity } from '../core/entity'
 
 export interface AppointmentProps {
   date: Date
+  startTime: string // "HH:mm"
+  endTime: string // "HH:mm"
   status: AppointmentStatus
   notes?: string
   clientId: UniqueEntityID
@@ -16,6 +18,14 @@ export interface AppointmentProps {
 export class AppointmentEntity extends Entity<AppointmentProps> {
   get date() {
     return this.props.date
+  }
+
+  get startTime() {
+    return this.props.startTime
+  }
+
+  get endTime() {
+    return this.props.endTime
   }
 
   get status() {
@@ -118,6 +128,8 @@ export class AppointmentEntity extends Entity<AppointmentProps> {
         serviceId: props.serviceId!,
         createdAt: props.createdAt ?? new Date(),
         updatedAt: props.updatedAt ?? new Date(),
+        startTime: props.startTime!,
+        endTime: props.endTime!,
       },
       id,
     )

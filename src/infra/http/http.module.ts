@@ -1,11 +1,15 @@
 import { UpdateUserProfileController } from './controllers/update-user-profile.controller'
 import { AuthenticateUserController } from './controllers/authenticate-user.controller'
 import { GetUserProfileController } from './controllers/get-user-profile.controller'
+import { BusinessHourController } from './controllers/business-hours.controller'
 import { RefreshTokenController } from './controllers/refresh-token.controller'
+import { AvailabilityController } from './controllers/availability.controller'
+import { AppointmentController } from './controllers/appointment.controller'
 import { CreateUserController } from './controllers/create-user.controller'
 import { BarbershopController } from './controllers/barbershop.controller'
+import { BreakTimeController } from './controllers/break-time.controller'
+import { AvailabilityService } from './services/availability.service'
 import { ServiceController } from './controllers/service.controller'
-import { BusinessHourController } from './controllers/business-hours.controller'
 import { HealthController } from './controllers/health.controller'
 import { DatabaseModule } from '../database/database.module'
 import { AuthModule } from '../auth/auth.module'
@@ -22,7 +26,11 @@ import { Module } from '@nestjs/common'
     BarbershopController,
     ServiceController,
     BusinessHourController,
+    BreakTimeController,
+    AppointmentController,
+    AvailabilityController,
     HealthController,
   ],
+  providers: [AvailabilityService],
 })
 export class HttpModule {}

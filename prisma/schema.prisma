@@ -74,6 +74,7 @@ model Barbershop {
   owner         User              @relation("OwnerBarbershop", fields: [ownerId], references: [id], onDelete: Cascade)
   services      Service[]
   businessHours BusinessHour[]
+  breakTimes    BreakTime[]
   appointments  Appointment[]
   favorites     Favorite[]
   images        BarbershopImage[]
@@ -99,7 +100,7 @@ model Service {
   id          String   @id @default(uuid())
   name        String
   description String?
-  duration    Int? // Duração em minutos
+  duration    Int // Duração em minutos (obrigatório para gerar slots)
   price       Decimal  @db.Decimal(10, 2)
   oldPrice    Decimal? @map("old_price") @db.Decimal(10, 2)
   imageUrl    String?
@@ -129,14 +130,31 @@ model BusinessHour {
   @@map("business_hours")
 }
 
+// ===== INTERVALOS / PAUSAS =====
+model BreakTime {
+  id        String    @id @default(uuid())
+  dayOfWeek DayOfWeek @map("day_of_week")
+  startTime String    @map("start_time") // Formato: "HH:mm"
+  endTime   String    @map("end_time") // Formato: "HH:mm"
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  barbershopId String     @map("barbershop_id")
+  barbershop   Barbershop @relation(fields: [barbershopId], references: [id], onDelete: Cascade)
+
+  @@map("break_times")
+}
+
 // ===== AGENDAMENTOS =====
 model Appointment {
-  id          String            @id @default(uuid())
-  scheduledAt DateTime // Data e hora do agendamento
-  status      AppointmentStatus @default(PENDING)
-  notes       String? // Observações do cliente
-  createdAt   DateTime          @default(now()) @map("created_at")
-  updatedAt   DateTime          @updatedAt @map("updated_at")
+  id        String            @id @default(uuid())
+  date      DateTime          @db.Date // Apenas a data (sem hora)
+  startTime String            @map("start_time") // Formato: "HH:mm"
+  endTime   String            @map("end_time") // Formato: "HH:mm"
+  status    AppointmentStatus @default(PENDING)
+  notes     String?
+  createdAt DateTime          @default(now()) @map("created_at")
+  updatedAt DateTime          @updatedAt @map("updated_at")
 
   clientId     String     @map("client_id")
   client       User       @relation(fields: [clientId], references: [id], onDelete: Cascade)
@@ -146,8 +164,8 @@ model Appointment {
   service      Service    @relation(fields: [serviceId], references: [id], onDelete: Cascade)
 
   @@index([clientId, status])
-  @@index([barbershopId, scheduledAt])
-  @@index([scheduledAt, status])
+  @@index([barbershopId, date])
+  @@index([date, status])
   @@map("appointments")
 }
 
